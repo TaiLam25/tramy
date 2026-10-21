@@ -1,5 +1,6 @@
 /* =========================================================
    STYLE.CSS - Romantic Cinematic WebGL Experience
+   Optimized for seamless Desktop & Mobile responsiveness
    ========================================================= */
 
 :root {
@@ -33,6 +34,7 @@ body, html {
     position: relative;
     width: 100vw;
     height: 100vh;
+    height: 100dvh; /* Mobile browser address bar fix */
     overflow: hidden;
     background: radial-gradient(circle at 50% 65%, #32133e 0%, #1c0a27 45%, #0d0416 80%, #05010a 100%);
 }
@@ -80,10 +82,10 @@ body, html {
 /* Initial Guidance Hint */
 .prompt-hint {
     position: absolute;
-    bottom: 42px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(38, 14, 52, 0.55);
+    background: rgba(38, 14, 52, 0.6);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 182, 193, 0.35);
@@ -97,6 +99,7 @@ body, html {
     animation: gentlePulse 3s ease-in-out infinite;
     transition: opacity 0.6s ease, transform 0.6s ease;
     pointer-events: none;
+    white-space: nowrap;
 }
 
 .prompt-hint.hidden {
@@ -136,14 +139,15 @@ body, html {
 
 /* =========================================================
    MESSAGE CONTAINER - Reveal with Blur-to-Focus
+   Preserves 3-Column Layout: [ Photo 1 ] [ Card ] [ Photo 2 ]
    ========================================================= */
 .message-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.95);
-    width: 95%;
-    max-width: 1020px;
+    width: 96%;
+    max-width: 1040px;
     z-index: 20;
     display: flex;
     flex-direction: column;
@@ -163,29 +167,30 @@ body, html {
     pointer-events: auto;
 }
 
-/* Layout wrapping Left Photo, Center Message Card, Right Photo */
+/* 3-Column Layout: Left Photo, Center Message Card, Right Photo */
 .reveal-content-wrapper {
     display: flex;
+    flex-direction: row; /* Always horizontal side-by-side */
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 18px;
     width: 100%;
 }
 
 /* Equal-Sized Framed Photos */
 .photo-card {
     position: relative;
-    width: 185px;
-    height: 255px;
+    width: 180px;
+    height: 250px;
     flex-shrink: 0;
     border-radius: 20px;
-    padding: 6px;
+    padding: 5px;
     background: rgba(28, 12, 38, 0.72);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1.5px solid rgba(255, 182, 193, 0.45);
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55),
-                0 0 22px rgba(255, 117, 140, 0.35);
+                0 0 20px rgba(255, 117, 140, 0.35);
     overflow: hidden;
 }
 
@@ -205,7 +210,7 @@ body, html {
         transform: rotate(-3deg) translateY(0);
     }
     50% {
-        transform: rotate(-1.5deg) translateY(-8px);
+        transform: rotate(-1.5deg) translateY(-6px);
     }
 }
 
@@ -214,7 +219,7 @@ body, html {
         transform: rotate(3deg) translateY(0);
     }
     50% {
-        transform: rotate(1.5deg) translateY(-8px);
+        transform: rotate(1.5deg) translateY(-6px);
     }
 }
 
@@ -223,7 +228,7 @@ body, html {
     height: 100%;
     object-fit: cover;
     object-position: center;
-    border-radius: 14px;
+    border-radius: 15px;
     display: block;
     image-rendering: -webkit-optimize-contrast;
 }
@@ -238,9 +243,9 @@ body, html {
 
 .photo-sparkle-tag {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 14px;
+    top: 8px;
+    right: 8px;
+    font-size: 13px;
     filter: drop-shadow(0 0 6px #ffeaa7);
     pointer-events: none;
     z-index: 3;
@@ -254,13 +259,14 @@ body, html {
     -webkit-backdrop-filter: blur(20px);
     border: 1.5px solid rgba(255, 182, 193, 0.38);
     border-radius: 28px;
-    padding: 32px 30px 28px;
+    padding: 30px 28px 26px;
     text-align: center;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55),
                 inset 0 1px 1px rgba(255, 255, 255, 0.25);
     overflow: hidden;
     flex: 1;
-    max-width: 580px;
+    max-width: 560px;
+    min-width: 0; /* Prevents flex overflow */
 }
 
 /* Diffuse Background Aura */
@@ -300,7 +306,7 @@ body, html {
         transform: translateY(0) rotate(0deg);
     }
     50% {
-        transform: translateY(-6px) rotate(2deg);
+        transform: translateY(-5px) rotate(2deg);
     }
 }
 
@@ -325,13 +331,14 @@ body, html {
 /* The exact quote text */
 .message-quote {
     font-family: 'Playfair Display', serif;
-    font-size: 24px;
+    font-size: 23px;
     line-height: 1.6;
     font-weight: 600;
     color: #fff6f8;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 182, 193, 0.35);
     letter-spacing: 0.3px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    word-break: break-word;
 }
 
 /* Highlight phrase: "cảm ơn em yêu" */
@@ -344,14 +351,14 @@ body, html {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 14px var(--glow-pink));
-    padding: 0 4px;
+    padding: 0 3px;
 }
 
 .card-shimmer-line {
-    width: 60px;
+    width: 50px;
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(255, 234, 167, 0.8), transparent);
-    margin: 16px auto 0;
+    margin: 14px auto 0;
     border-radius: 2px;
 }
 
@@ -359,16 +366,16 @@ body, html {
    REPLAY BUTTON ("Xem lại 🌸")
    ========================================================= */
 .replay-btn {
-    margin-top: 22px;
+    margin-top: 20px;
     background: rgba(38, 14, 52, 0.65);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 182, 193, 0.4);
     color: #ffffff;
     font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 500;
-    padding: 10px 26px;
+    padding: 9px 24px;
     border-radius: 30px;
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 117, 140, 0.25);
@@ -376,6 +383,7 @@ body, html {
     transform: translateY(12px);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     pointer-events: none;
+    white-space: nowrap;
 }
 
 .replay-btn.visible {
@@ -396,66 +404,107 @@ body, html {
 }
 
 /* =========================================================
-   RESPONSIVE DESIGN (Mobile & Tablet)
+   RESPONSIVE DESIGN (Phù hợp trên mọi loại điện thoại)
+   Giữ nguyên bố cục 3 cột [ Ảnh trái - Lời chúc - Ảnh phải ]
    ========================================================= */
-@media (max-width: 860px) {
+@media (max-width: 768px) {
     .reveal-content-wrapper {
-        flex-wrap: wrap;
-        gap: 14px;
-        justify-content: center;
+        gap: 8px; /* Tối ưu khoảng cách trên màn hình hẹp */
     }
 
-    .message-card {
-        order: 1;
-        width: 100%;
-        max-width: 100%;
-        padding: 24px 20px 20px;
-        border-radius: 22px;
+    /* Kích thước ảnh co giãn tỷ lệ trên điện thoại */
+    .photo-card {
+        width: clamp(72px, 22vw, 130px);
+        height: clamp(100px, 30vw, 180px);
+        padding: 3.5px;
+        border-radius: 14px;
     }
 
     .photo-card-left {
-        order: 2;
-        width: 135px;
-        height: 185px;
-        transform: rotate(-2deg);
+        transform: rotate(-2.5deg);
     }
 
     .photo-card-right {
-        order: 3;
-        width: 135px;
-        height: 185px;
-        transform: rotate(2deg);
+        transform: rotate(2.5deg);
+    }
+
+    .couple-photo {
+        border-radius: 11px;
+    }
+
+    .photo-sparkle-tag {
+        top: 5px;
+        right: 5px;
+        font-size: 11px;
+    }
+
+    /* Thẻ lời chúc ở giữa */
+    .message-card {
+        padding: 16px 12px 14px;
+        border-radius: 20px;
+    }
+
+    .boba-icon-wrapper {
+        margin-bottom: 6px;
+    }
+
+    .boba-svg {
+        width: 40px;
+        height: 50px;
     }
 
     .message-quote {
-        font-size: 19px;
-        line-height: 1.55;
+        font-size: clamp(13px, 3.8vw, 17px);
+        line-height: 1.5;
+        margin-bottom: 6px;
+    }
+
+    .card-shimmer-line {
+        width: 36px;
+        margin: 10px auto 0;
     }
 
     .prompt-hint {
-        bottom: 26px;
-        padding: 8px 18px;
+        bottom: 20px;
+        padding: 7px 16px;
     }
 
     .hint-text {
-        font-size: 13px;
+        font-size: 12.5px;
     }
 
     .replay-btn {
-        margin-top: 16px;
-        font-size: 13px;
-        padding: 8px 22px;
+        margin-top: 14px;
+        font-size: 12.5px;
+        padding: 7px 20px;
     }
 }
 
-@media (max-width: 400px) {
-    .photo-card-left, .photo-card-right {
-        width: 120px;
-        height: 165px;
+/* Các dòng điện thoại siêu nhỏ (iPhone SE, 360px) */
+@media (max-width: 380px) {
+    .reveal-content-wrapper {
+        gap: 6px;
+    }
+
+    .photo-card {
+        width: clamp(64px, 20vw, 90px);
+        height: clamp(90px, 28vw, 130px);
+        border-radius: 11px;
+        padding: 2.5px;
+    }
+
+    .message-card {
+        padding: 12px 8px 10px;
+        border-radius: 16px;
     }
 
     .message-quote {
-        font-size: 17px;
-        line-height: 1.5;
+        font-size: 12.5px;
+        line-height: 1.45;
+    }
+
+    .boba-svg {
+        width: 34px;
+        height: 42px;
     }
 }

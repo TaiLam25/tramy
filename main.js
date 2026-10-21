@@ -1,6 +1,5 @@
 // Main Application Controller - Three.js Romantic Cinematic Experience
 document.addEventListener('DOMContentLoaded', () => {
-    const isMobile = window.innerWidth <= 768;
     const canvas = document.getElementById('webgl-canvas');
     const promptHint = document.getElementById('prompt-hint');
     const messageContainer = document.getElementById('message-container');
@@ -21,39 +20,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const scene = new THREE.Scene();
 
-    // Perspective Camera perfectly centered on the tree and its canopy
+    // Perspective Camera: dynamically adapts between mobile portrait and desktop
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-    const initialCamZ = isMobile ? 15.2 : 13.2;
-    const initialCamY = 1.05;
-    camera.position.set(0, initialCamY, initialCamZ);
-    camera.lookAt(0, 1.05, 0);
+    let initialCamZ = 13.2;
+    let initialCamY = 1.05;
 
-    // 2. Cinematic Romantic Lighting (Rim light, core canopy glow, warm ground reflection)
-    // Ambient twilight lavender
+    function updateCameraFraming() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const aspect = w / h;
+        camera.aspect = aspect;
+
+        if (aspect < 1) {
+            // Mobile Portrait: Wider FOV & camera distance so full tree canopy is captured
+            camera.fov = 54;
+            initialCamZ = 16.5;
+            initialCamY = 1.2;
+            camera.position.set(0, initialCamY, initialCamZ);
+            camera.lookAt(0, 1.15, 0);
+        } else {
+            // Desktop / Landscape: Cinematic 45 FOV
+            camera.fov = 45;
+            initialCamZ = 13.2;
+            initialCamY = 1.05;
+            camera.position.set(0, initialCamY, initialCamZ);
+            camera.lookAt(0, 1.05, 0);
+        }
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    }
+    updateCameraFraming();
+    window.addEventListener('resize', updateCameraFraming);
+
+    // 2. Cinematic Romantic Lighting
     const ambientLight = new THREE.AmbientLight(0x4d2858, 1.6);
     scene.add(ambientLight);
 
-    // Front-Right Soft Warm Key Light
     const keyLight = new THREE.DirectionalLight(0xffd6e0, 2.0);
     keyLight.position.set(5, 8, 7);
     scene.add(keyLight);
 
-    // Back-Left Golden Rim Light (Tạo viền sáng lấp lánh cho tán hoa)
     const rimLight = new THREE.DirectionalLight(0xffeaa7, 1.8);
     rimLight.position.set(-6, 7, -6);
     scene.add(rimLight);
 
-    // Core Canopy Inner Glow (Tán hoa phát sáng ấm áp từ bên trong)
     const canopyPointLight = new THREE.PointLight(0xff758c, 2.5, 16);
     canopyPointLight.position.set(0, 2.2, 0.6);
     scene.add(canopyPointLight);
 
-    // Floating Island Ground Reflection
     const groundWarmLight = new THREE.PointLight(0xff9ff3, 1.2, 10);
     groundWarmLight.position.set(0, -2.1, 1.8);
     scene.add(groundWarmLight);
 
     // 3. Ambient 3D Fairy Fireflies
+    const isMobile = window.innerWidth <= 768;
     const fireflyCount = isMobile ? 65 : 130;
     const fireflyGeom = new THREE.BufferGeometry();
     const fireflyPos = new Float32Array(fireflyCount * 3);
@@ -86,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fireflies = new THREE.Points(fireflyGeom, fireflyMaterial);
     scene.add(fireflies);
 
-    // 4. Instantiate 3D Flowering Tree & Instanced Petal System
+    // 4. Instantiate 3D Sakura Tree & Instanced Petal System
     const tree = new window.FloweringTree(scene, isMobile);
     const petalSystem = new window.PetalSystem(scene, isMobile);
     petalSystem.populateOnTree(tree.flowerPositions);
@@ -210,18 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 6. Responsive Resize Handling
-    window.addEventListener('resize', () => {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(w, h);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    });
-
-    // 7. Single 60 FPS RequestAnimationFrame Loop with deltaTime
+    // 6. Single 60 FPS RequestAnimationFrame Loop with deltaTime
     const clock = new THREE.Clock();
     let isTabVisible = true;
 
@@ -236,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dt = Math.min(clock.getDelta(), 0.08);
 
-        // Update tree gentle breeze sway and floating fairy lanterns
+        // Update tree gentle breeze sway and falling idle petals
         tree.update(dt);
 
         // Update 3D petal system
