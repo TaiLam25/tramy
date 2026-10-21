@@ -1,0 +1,363 @@
+/* =========================================================
+   STYLE.CSS - Romantic Cinematic WebGL Experience
+   ========================================================= */
+
+:root {
+    --bg-dark: #07030c;
+    --text-white: #ffffff;
+    --highlight-pink: #ff758c;
+    --highlight-gold: #ffeaa7;
+    --glow-pink: rgba(255, 117, 140, 0.7);
+    --glow-gold: rgba(255, 234, 167, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: var(--text-white);
+}
+
+#experience-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Cinematic twilight gradient background */
+    background: radial-gradient(circle at 50% 65%, #32133e 0%, #1c0a27 45%, #0d0416 80%, #05010a 100%);
+}
+
+/* 3D WebGL Canvas Layer */
+#webgl-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: pointer;
+    z-index: 1;
+}
+
+/* Touch Ripple Effect */
+.touch-ripple {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 117, 140, 0.6) 50%, rgba(255, 182, 193, 0) 100%);
+    pointer-events: none;
+    z-index: 10;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+}
+
+.touch-ripple.active {
+    animation: rippleExpand 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes rippleExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0.2);
+        opacity: 0.95;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(9);
+        opacity: 0;
+    }
+}
+
+/* Initial Guidance Hint */
+.prompt-hint {
+    position: absolute;
+    bottom: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(38, 14, 52, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 182, 193, 0.35);
+    border-radius: 30px;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 5;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 117, 140, 0.25);
+    animation: gentlePulse 3s ease-in-out infinite;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    pointer-events: none;
+}
+
+.prompt-hint.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+}
+
+.hint-text {
+    font-size: 14.5px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    background: linear-gradient(90deg, #ffffff, #ffeaa7, #ff9ff3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sparkle {
+    font-size: 13px;
+    animation: spinSparkle 4s linear infinite;
+}
+
+@keyframes gentlePulse {
+    0%, 100% {
+        transform: translateX(-50%) scale(1);
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 117, 140, 0.2);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.04);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 117, 140, 0.5);
+    }
+}
+
+@keyframes spinSparkle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   MESSAGE CONTAINER - Reveal with Blur-to-Focus
+   ========================================================= */
+.message-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 680px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    filter: blur(16px);
+    pointer-events: none;
+    transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.message-container.visible {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+/* Message Card with Ethereal Soft Glow */
+.message-card {
+    position: relative;
+    background: rgba(22, 9, 32, 0.68);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 182, 193, 0.35);
+    border-radius: 28px;
+    padding: 34px 36px 32px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55),
+                inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Diffuse Background Aura */
+.card-glow-aura {
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 117, 140, 0.18) 0%, rgba(255, 234, 167, 0.08) 45%, rgba(0, 0, 0, 0) 75%);
+    z-index: -1;
+    pointer-events: none;
+    animation: auraBreathe 5s ease-in-out infinite alternate;
+}
+
+@keyframes auraBreathe {
+    0% { transform: scale(0.92); opacity: 0.6; }
+    100% { transform: scale(1.08); opacity: 0.95; }
+}
+
+/* Cute Boba Milk Tea Icon */
+.boba-icon-wrapper {
+    display: inline-block;
+    margin-bottom: 12px;
+    position: relative;
+    filter: drop-shadow(0 0 14px rgba(246, 202, 165, 0.8)) drop-shadow(0 0 22px rgba(255, 117, 140, 0.45));
+    animation: bobaFloat 3s ease-in-out infinite;
+}
+
+.boba-svg {
+    overflow: visible;
+    display: block;
+}
+
+@keyframes bobaFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-6px) rotate(2deg);
+    }
+}
+
+.boba-sparkle {
+    transform-origin: center;
+    animation: sparkleShine 2.2s ease-in-out infinite alternate;
+}
+
+.sparkle-left {
+    animation-delay: 0.2s;
+}
+
+.sparkle-right {
+    animation-delay: 1.1s;
+}
+
+@keyframes sparkleShine {
+    0% { transform: scale(0.7) rotate(0deg); opacity: 0.7; }
+    100% { transform: scale(1.3) rotate(22deg); opacity: 1; }
+}
+
+/* The exact quote text */
+.message-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    line-height: 1.65;
+    font-weight: 600;
+    color: #fff6f8;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 182, 193, 0.35);
+    letter-spacing: 0.3px;
+    margin-bottom: 12px;
+}
+
+/* Highlight phrase: "cảm ơn em yêu" */
+.highlight-lover {
+    display: inline-block;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-style: italic;
+    background: linear-gradient(135deg, #ffffff 0%, #ffeaa7 30%, #ff9ff3 65%, #ff758c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 14px var(--glow-pink));
+    padding: 0 4px;
+}
+
+.card-shimmer-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 234, 167, 0.8), transparent);
+    margin: 18px auto 0;
+    border-radius: 2px;
+}
+
+/* =========================================================
+   REPLAY BUTTON ("Xem lại 🌸")
+   ========================================================= */
+.replay-btn {
+    margin-top: 24px;
+    background: rgba(38, 14, 52, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 182, 193, 0.4);
+    color: #ffffff;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 26px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 117, 140, 0.25);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.replay-btn.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.replay-btn:hover {
+    background: rgba(255, 117, 140, 0.35);
+    border-color: #ff758c;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 25px rgba(255, 117, 140, 0.45);
+}
+
+.replay-btn:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN (Mobile & Tablet)
+   ========================================================= */
+@media (max-width: 768px) {
+    .message-container {
+        width: 92%;
+    }
+
+    .message-card {
+        padding: 26px 22px 22px;
+        border-radius: 22px;
+    }
+
+    .boba-icon-wrapper {
+        margin-bottom: 8px;
+    }
+
+    .boba-svg {
+        width: 48px;
+        height: 60px;
+    }
+
+    .message-quote {
+        font-size: 20px;
+        line-height: 1.6;
+    }
+
+    .prompt-hint {
+        bottom: 30px;
+        padding: 8px 18px;
+    }
+
+    .hint-text {
+        font-size: 13px;
+    }
+
+    .replay-btn {
+        margin-top: 18px;
+        font-size: 13px;
+        padding: 9px 22px;
+    }
+}
+
+@media (max-width: 400px) {
+    .message-quote {
+        font-size: 18px;
+        line-height: 1.55;
+    }
+}
